@@ -1,0 +1,49 @@
+class @com.linkedin {
+  // tell the system this device uses customized js code
+  import loader from @org.thingpedia.v2();
+  // tell the system this device uses OAuth2
+  import config from @org.thingpedia.config.oauth2(client_id=<your-client-id>, client_secret=<your-client-secret>);
+
+  /* 
+    The function to return the user's profile from LinkedIn.
+    Example commands: "get my LinkedIn profile"
+    Qualifiers: 
+      - monitorable: if you want the query to be monitored and trigger actions on change
+      - list: if the query returns multiple results  
+  */
+  monitorable query get_profile(out formatted_name: String,
+                                out headline: String,
+                                out industry: String,
+                                out specialties: String,
+                                out positions: Array(String),
+                                out profile_picture: Entity(tt:picture))
+  #_[confirmation="your LinkedIn profile"]
+  #_[formatted=[{type="text",text="${formatted_name}"}, {type="text",text="${headline}"}, {type="picture",url="${profile_picture}"}, {type="text",text="Works in ${industry}"}]]
+  #[poll_interval=86400000ms]
+  #[doc="retrieve your LinkedIn profile"];
+
+  /* 
+    The function to post on LinkedIn.
+    Example commands: "post on LinkedIn"
+  */
+  action share(in req status: String #_[prompt="What do you want to post? Include a link to a page."])
+  #_[confirmation="share $status on your LinkedIn"]
+  #[doc="share a comment and a link "];
+}
+
+
+
+dataset @com.linkedin language "en" {
+  query  := @com.linkedin.get_profile()
+  #_[utterances=["my linkedin profile","my profile on linkedin"]]
+  #[id=1687841];
+
+  action (p_status :String)  := @com.linkedin.share(status=p_status)
+  #_[utterances=["share $p_status on linkedin","post $p_status on linkedin"]]
+  #[id=1687842];
+
+  action  := @com.linkedin.share()
+  #_[utterances=["update my linkedin","post something on my linkedin"]]
+  #[id=1687844];
+}
+
