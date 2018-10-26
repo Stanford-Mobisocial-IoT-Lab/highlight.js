@@ -8,7 +8,7 @@ function(hljs) {
   let KEYWORDS = {
     keyword: 
       'let join edge monitor new as of in out req opt ' + 
-      'class extends dataset mixin this import null enum query action stream from'
+      'class extends dataset mixin this import null enum query action stream from language'
     ,
     literal:
       'true false loader config',
@@ -36,7 +36,7 @@ function(hljs) {
       {
         className: 'symbol', 
         begin: /\@/,
-        end: /[\\s | \( ]/,
+        end: /[\s | \( ]/,
         excludeEnd: true
       },
       {
